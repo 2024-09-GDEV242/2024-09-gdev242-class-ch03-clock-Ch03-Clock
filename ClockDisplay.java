@@ -1,31 +1,33 @@
 
 /**
- * The ClockDisplay class implements a digital clock display for a
- * European-style 24 hour clock. The clock shows hours and minutes. The 
- * range of the clock is 00:00 (midnight) to 23:59 (one minute before 
- * midnight).
+ * The ClockDisplay class implements a digital clock display for an
+ * American style 12 hour clock. The clock shows hours and minutes. The 
+ * range of the clock is 12:00am (midnight) to 12:00pm. The clock
+ * internally is a 12 hour clock.
  * 
  * The clock display receives "ticks" (via the timeTick method) every minute
  * and reacts by incrementing the display. This is done in the usual clock
  * fashion: the hour increments when the minutes roll over to zero.
  * 
- * @author Michael Kölling and David J. Barnes
- * @version 2016.02.29
+ * @author Henry Petrillo
+ * @version 2024.09.25
  */
 public class ClockDisplay
 {
     private NumberDisplay hours;
     private NumberDisplay minutes;
     private String displayString;    // simulates the actual display
+    private String amOrPm;           // stores "am" or "pm"
     
     /**
      * Constructor for ClockDisplay objects. This constructor 
-     * creates a new clock set at 00:00.
+     * creates a new clock set at 12:00am.
      */
     public ClockDisplay()
     {
         hours = new NumberDisplay(24);
         minutes = new NumberDisplay(60);
+        amOrPm = "AM";
         updateDisplay();
     }
 
@@ -78,7 +80,14 @@ public class ClockDisplay
      */
     private void updateDisplay()
     {
-        displayString = hours.getDisplayValue() + ":" + 
-                        minutes.getDisplayValue();
+        int hourValue = hours.getValue();
+        amOrPm = (hourValue < 12) ? "AM" : "PM";
+        
+        int currentHour = hourValue % 12;
+        if (currentHour == 0) {
+            currentHour = 12;
+        }
+        
+        displayString = String.format("%02d:%02d %s", currentHour, minutes.getValue(), amOrPm);
     }
 }
