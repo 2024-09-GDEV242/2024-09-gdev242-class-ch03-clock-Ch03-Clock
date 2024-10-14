@@ -1,22 +1,26 @@
 
 /**
+ * 12 HR-Internal Branch 
  * The ClockDisplay class implements a digital clock display for a
- * European-style 24 hour clock. The clock shows hours and minutes. The 
- * range of the clock is 00:00 (midnight) to 23:59 (one minute before 
- * midnight).
+ * American-style 12 hour clock. The clock shows hours and minutes. 
+ * 
+ * The internal range of the clock is 00:00 (midnight) to 11:59  
+ * In order to track AM or PM, we will need additional Fields and 
+ * Logic to handle the switch in meridian
  * 
  * The clock display receives "ticks" (via the timeTick method) every minute
  * and reacts by incrementing the display. This is done in the usual clock
  * fashion: the hour increments when the minutes roll over to zero.
  * 
- * @author Michael Kölling and David J. Barnes
- * @version 2016.02.29
+ * @author Mari Modebadze 
+ * @version 2024.10.08
  */
 public class ClockDisplay
 {
-    private NumberDisplay hours;
-    private NumberDisplay minutes;
+    private NumberDisplay hours;     // stores 0-23
+    private NumberDisplay minutes;   // stores 0-59
     private String displayString;    // simulates the actual display
+    private String meridian;         // AM/PM indicator 
     
     /**
      * Constructor for ClockDisplay objects. This constructor 
@@ -26,6 +30,7 @@ public class ClockDisplay
     {
         hours = new NumberDisplay(24);
         minutes = new NumberDisplay(60);
+        meridian = "AM";  //Default to AM
         updateDisplay();
     }
 
@@ -77,8 +82,18 @@ public class ClockDisplay
      * Update the internal string that represents the display.
      */
     private void updateDisplay()
-    {
-        displayString = hours.getDisplayValue() + ":" + 
-                        minutes.getDisplayValue();
+    {          
+        int hour24 = hours.getValue();
+        
+        int hour12 = hour24 % 12;
+        if(hour12 == 0) 
+        {
+            hour12 = 12;  
+        }
+        
+        meridian = (hour24 < 12) ? "AM" : "PM";
+        
+        displayString = hour12 + ":" +
+                minutes.getDisplayValue() + "" + meridian;
     }
 }
